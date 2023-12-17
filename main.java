@@ -1,44 +1,114 @@
-// This is main file
+/******************************************************************************
+                          #Learn Flow Internship 
+                          project -1 
+                          Banking System
+*******************************************************************************/
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
-public class Main {
-    public static void main(String[] args) {
-        Bank bank = new Bank();
 
-        // Creating accounts
-        bank.createAccount("123456");
-        bank.createAccount("789012");
+class Transaction {
+    private String description;
+    private double amount;
 
-        // Accessing an account
-        Account acc1 = bank.getAccount("123456");
-        Account acc2 = bank.getAccount("789012");
-
-        // Checking if accounts are null (in a real system, handle this scenario more gracefully)
-        if (acc1 != null && acc2 != null) {
-            // Depositing and withdrawing
-            acc1.deposit(1000);
-            acc2.deposit(500);
-            acc1.withdraw(200);
-
-            // Transferring funds
-            bank.transfer(acc1, acc2, 300);
-
-            // Checking balances and transactions
-            System.out.println("Account 1 Balance: $" + acc1.getBalance());
-            System.out.println("Account 2 Balance: $" + acc2.getBalance());
-
-            System.out.println("Account 1 Transactions:");
-            for (Transaction transaction : acc1.getTransactions()) {
-                System.out.println(transaction.getType() + ": $" + transaction.getAmount());
-            }
-
-            System.out.println("Account 2 Transactions:");
-            for (Transaction transaction : acc2.getTransactions()) {
-                System.out.println(transaction.getType() + ": $" + transaction.getAmount());
-            }
-        } else {
-            System.out.println("One or both accounts not found.");
-        }
-        
+    public Transaction(String description, double amount) {
+        this.description = description;
+        this.amount = amount;
     }
-   
+    public String getDescription() {
+        return description;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    // Getters for description and amount
+}
+
+class Account {
+    private double balance;
+    private List<Transaction> transactionHistory;
+
+    public Account() {
+        this.balance = 0.0;
+        this.transactionHistory = new ArrayList<>();
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void deposit(double amount) {
+        balance += amount;
+        transactionHistory.add(new Transaction("Deposit", amount));
+    }
+
+    public void withdraw(double amount) {
+        if (amount <= balance) {
+            balance -= amount;
+            transactionHistory.add(new Transaction("Withdrawal", amount));
+        } else {
+            System.out.println("Insufficient funds.");
+        }
+    }
+
+    public List<Transaction> getTransactionHistory() {
+        return transactionHistory;
+    }
+}
+
+class User {
+    private String username;
+    private String password;
+    private Account account;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.account = new Account();
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+}
+
+public class OnlineBankingSystem {
+    public static void main(String[] args) {
+        // Create users
+        User user1 = new User("user1", "password1");
+        User user2 = new User("user2", "password2");
+
+        // Simulating banking operations
+        user1.getAccount().deposit(1000);
+        user1.getAccount().withdraw(500);
+
+        user2.getAccount().deposit(1500);
+        user2.getAccount().withdraw(200);
+
+        // Displaying account information and transaction history
+        displayAccountInfo(user1);
+        displayAccountInfo(user2);
+    }
+
+    public static void displayAccountInfo(User user) {
+        System.out.println("Account information for " + user.getUsername());
+        System.out.println("Balance: $" + user.getAccount().getBalance());
+        System.out.println("Transaction History:");
+        List<Transaction> transactions = user.getAccount().getTransactionHistory();
+        for (Transaction transaction : transactions) {
+            System.out.println(transaction.getDescription() + ": $" + transaction.getAmount());
+        }
+        System.out.println();
+    }
 }
